@@ -209,7 +209,7 @@ module HTTP
       end
 
       def headers
-        @headers ||= @response.each_header.entries
+        @headers ||= Hash[@response.each_header.entries]
       end
 
       def body

@@ -26,7 +26,9 @@ describe 'HTTP Client Request' do
 
   # TODO: mock http endpoint
   it 'executes a request and returns reponse' do
-    assert HTTP::Client.get(URI.parse("http://www.google.com"))
+    response = HTTP::Client.get(URI.parse("http://www.google.com"))
+    assert response
+    assert_kind_of Hash, response.headers
   end
 
   it 'raises timeout errors' do
