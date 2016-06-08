@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.date = "2016-06-08"
   s.description = "Light weight wrapper around Net::HTTP"
   s.email = ["deepfryed@gmail.com"]
-  s.files = ["CHANGELOG", "README.md", "lib/http-client.rb", "lib/http/client.rb", "test/helper.rb", "test/test_request.rb"]
+  s.files = ["CHANGELOG", "README.md", "lib/http-client.rb", "lib/http/client.rb", "test/helper.rb", "test/server.rb", "test/test_request.rb"]
   s.homepage = "http://github.com/deepfryed/http-client"
   s.licenses = ["MIT"]
   s.rubygems_version = "2.2.2"
