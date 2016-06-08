@@ -16,7 +16,11 @@ res = HTTP::Client::Request.new(:get, "http://www.example.org", max_redirects: 2
 
 # save a few keystrokes.
 res = HTTP::Client.get("http://www.example.org/", max_redirects: 2)
-res = HTTP::Client.post("http://www.example.org/", files: {pic: "kittens.jpg"}, query: {title: "the usual suspects"})
+res = HTTP::Client.post(
+  "http://www.example.org/",
+  files: {pic: "kittens.jpg"},
+  query: {title: "the usual suspects"}
+)
 ```
 
 ## API
@@ -36,20 +40,20 @@ HTTP::Client::Response
 
 ### Request parameters
 
-Required:
+#### Required
 
 | Name | Type | Description |
 |------|------|-------------|
 | verb | Symbol | HTTP verb, one of :get, :head, :put, :post, :delete, :options, :trace. |
 | uri | String | Remote URI |
 
-Optional arguments hash:
+#### Optional arguments hash
 
 | Name | Type | Description |
 |------|------|-------------|
 | headers | Hash | Net::HTTP headers, in key-value pairs. |
 | query | Hash | Net::HTTP query-string in key-value pairs. |
-| files | Hash | Multi-part file uploads, in key-value pairs of {name => path_to_file} or {name => File} |
+| files | Hash | Multi-part file uploads, in key-value pairs of {name => path_to_file} or {name => [File]} |
 | body | String | Request body. |
 | auth | Hash | Basic-Auth hash. {username: "...", password: "..."} |
 | timeout | Integer | Fixed timeout for connection, read and ssl handshake in seconds. |
