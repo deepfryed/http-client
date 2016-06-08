@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: http-client 0.1.1 ruby lib
+# stub: http-client 0.1.2 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "http-client"
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
