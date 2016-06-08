@@ -8,7 +8,6 @@ class TestServer
 
   def initialize app
     @app      = app
-    @sessions = []
     @port     = find_port
   end
 
@@ -19,7 +18,6 @@ class TestServer
 
     @server = WEBrick::HTTPServer.new Port: @port, Logger: logger, AccessLog: accesslog
     @server.mount_proc(path) do |req, res|
-      @sessions << req
       code, headers, body = @app.call(req)
       res.status = code
       headers.each do |k, v|
