@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Bharanee Rathna"]
-  s.date = "2016-06-08"
+  s.date = "2016-06-09"
   s.description = "Light weight wrapper around Net::HTTP"
   s.email = ["deepfryed@gmail.com"]
   s.files = ["CHANGELOG", "README.md", "lib/http-client.rb", "lib/http/client.rb", "test/helper.rb", "test/server.rb", "test/test_request.rb"]
