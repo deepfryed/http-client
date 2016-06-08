@@ -2,6 +2,7 @@
 
 * Less restrictive dependency versions.
 * Fix body assignment in requests.
+* Tests
 
 == 0.1.0 (2016-06-08)
 
