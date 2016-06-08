@@ -1,6 +1,6 @@
 require 'bundler/setup'
 
-require 'http/client'
+require 'http-client'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'minitest/reporters'

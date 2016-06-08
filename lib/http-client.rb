@@ -1,3 +1,3 @@
-require 'http/simple'
+require_relative 'http/client'
 
 
