@@ -19,11 +19,12 @@ $gemspec = Gem::Specification.new do |s|
   s.homepage          = 'http://github.com/deepfryed/http-client'
   s.files             = Dir['{test,lib}/**/*.rb'] + %w(README.md CHANGELOG)
   s.require_paths     = %w(lib)
+  s.licenses          = %w(MIT)
 
   s.add_dependency('mime-types', '~> 3.1')
-  s.add_dependency('http-cookie', '~> 1.0.2')
-  s.add_development_dependency('rake', '~> 11.1.2')
-  s.add_development_dependency('minitest-reporters', '~> 1.1.9')
+  s.add_dependency('http-cookie', '~> 1.0')
+  s.add_development_dependency('rake', '~> 11.1')
+  s.add_development_dependency('minitest-reporters', '~> 1.1')
 end
 
 desc 'Generate gemspec'

@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.email = ["deepfryed@gmail.com"]
   s.files = ["CHANGELOG", "README.md", "lib/http-client.rb", "lib/http/client.rb", "test/helper.rb", "test/test_request.rb"]
   s.homepage = "http://github.com/deepfryed/http-client"
+  s.licenses = ["MIT"]
   s.rubygems_version = "2.2.2"
   s.summary = "A client wrapper around Net::HTTP"
 
@@ -21,19 +22,19 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<mime-types>, ["~> 3.1"])
-      s.add_runtime_dependency(%q<http-cookie>, ["~> 1.0.2"])
-      s.add_development_dependency(%q<rake>, ["~> 11.1.2"])
-      s.add_development_dependency(%q<minitest-reporters>, ["~> 1.1.9"])
+      s.add_runtime_dependency(%q<http-cookie>, ["~> 1.0"])
+      s.add_development_dependency(%q<rake>, ["~> 11.1"])
+      s.add_development_dependency(%q<minitest-reporters>, ["~> 1.1"])
     else
       s.add_dependency(%q<mime-types>, ["~> 3.1"])
-      s.add_dependency(%q<http-cookie>, ["~> 1.0.2"])
-      s.add_dependency(%q<rake>, ["~> 11.1.2"])
-      s.add_dependency(%q<minitest-reporters>, ["~> 1.1.9"])
+      s.add_dependency(%q<http-cookie>, ["~> 1.0"])
+      s.add_dependency(%q<rake>, ["~> 11.1"])
+      s.add_dependency(%q<minitest-reporters>, ["~> 1.1"])
     end
   else
     s.add_dependency(%q<mime-types>, ["~> 3.1"])
-    s.add_dependency(%q<http-cookie>, ["~> 1.0.2"])
-    s.add_dependency(%q<rake>, ["~> 11.1.2"])
-    s.add_dependency(%q<minitest-reporters>, ["~> 1.1.9"])
+    s.add_dependency(%q<http-cookie>, ["~> 1.0"])
+    s.add_dependency(%q<rake>, ["~> 11.1"])
+    s.add_dependency(%q<minitest-reporters>, ["~> 1.1"])
   end
 end
