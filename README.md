@@ -45,7 +45,7 @@ HTTP::Client::Response
 | Name | Type | Description |
 |------|------|-------------|
 | verb | Symbol | HTTP verb, one of :get, :head, :put, :post, :delete, :options, :trace. |
-| uri | String | Remote URI |
+| uri | String or URI | Remote URI |
 
 #### Optional arguments hash
 

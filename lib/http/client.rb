@@ -32,7 +32,7 @@ module HTTP
       # Create a new HTTP Client Request.
       #
       # @param verb          [Symbol]          HTTP verb, one of :get, :head, :put, :post, :delete, :options, :trace.
-      # @param uri           [String]          Remote URI
+      # @param uri           [String] or [URI] Remote URI.
       # @param headers       [Hash]            Net::HTTP headers, in key-value pairs.
       # @param query         [Hash]            Net::HTTP query-string in key-value pairs.
       # @param files         [Hash]            Multi-part file uploads, in key-value pairs of {name => path_to_file} or {name => File}
@@ -115,7 +115,7 @@ module HTTP
 
       private
         def parse_uri! uri
-          @uri = URI.parse(uri)
+          @uri = uri.kind_of?(URI) ? uri : URI.parse(uri)
           case @uri
             when URI::HTTP, URI::HTTPS
               # ok
