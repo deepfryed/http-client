@@ -1,3 +1,6 @@
 tmp/
 vendor/
 *.gem
+pkg/
+doc/
+.yardoc/

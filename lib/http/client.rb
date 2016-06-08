@@ -7,7 +7,7 @@ require 'http-cookie'
 
 module HTTP
   module Client
-    VERSION = '0.1.1'
+    VERSION = '0.1.2'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -31,22 +31,43 @@ module HTTP
 
       # Create a new HTTP Client Request.
       #
-      # @param verb          [Symbol]          HTTP verb, one of :get, :head, :put, :post, :delete, :options, :trace.
-      # @param uri           [String] or [URI] Remote URI.
-      # @param headers       [Hash]            Net::HTTP headers, in key-value pairs.
-      # @param query         [Hash]            Net::HTTP query-string in key-value pairs.
-      # @param files         [Hash]            Multi-part file uploads, in key-value pairs of {name => path_to_file} or {name => File}
-      # @param body          [String]          Request body.
-      # @param auth          [Hash]            Basic-Auth hash. {username: "...", password: "..."}
-      # @param timeout       [Integer]         Fixed timeout for connection, read and ssl handshake in seconds.
-      # @param open_timeout  [Integer]         Connection timeout in seconds.
-      # @param read_timeout  [Integer]         Read timeout in seconds.
-      # @param ssl_timeout   [Integer]         SSL handshake timeout in seconds.
-      # @param max_redirects [Integer]         Max redirect follow, default: 0
-      # @param ssl_verify    [Integer]         OpenSSL verification, HTTP::Client::SSL_VERIFY_PEER or HTTP::Client::SSL_VERIFY_NONE, defaults to SSL_VERIFY_PEER.
-      # @param jar           [HTTP::CookieJar] Optional cookie jar to use. Relies on HTTP::CookieJar from http-cookie gem.
+      # @param  [Symbol]        verb            HTTP verb, one of :get, :head, :put, :post, :delete, :options, :trace.
+      # @param  [String or URI] uri             Remote URI.
+      # @param  [Hash]          args            Options, see below.
+      # @option args [Hash]     headers         Net::HTTP headers, in key-value pairs.
+      # @option args [Hash]     query           Net::HTTP query-string in key-value pairs.
+      # @option args [Hash]     files           Multi-part file uploads, in key-value pairs of name & path or name & File object.
+      # @option args [String]   body            Request body.
+      # @option args [Hash]     auth            Basic-Auth hash. Requires :username and :password.
+      # @option args [Integer]  timeout         Fixed timeout for connection, read and ssl handshake in seconds.
+      # @option args [Integer]  open_timeout    Connection timeout in seconds.
+      # @option args [Integer]  read_timeout    Read timeout in seconds.
+      # @option args [Integer]  ssl_timeout     SSL handshake timeout in seconds.
+      # @option args [Integer]  max_redirects   Max redirect follow, default: 0
+      # @option args [Integer]  ssl_verify      OpenSSL verification, SSL_VERIFY_PEER or SSL_VERIFY_NONE, defaults to SSL_VERIFY_PEER.
+      # @option args [HTTP::CookieJar]          jar Optional cookie jar to use. Relies on HTTP::CookieJar from http-cookie gem.
       #
       # @return [HTTP::Client::Request]
+      #
+      # @example Retrieve a page using GET.
+      #   request  = HTTP::Client::Request.new(:get, "http://www.example.org/", query: {q: "search something"})
+      #   response = request.execute
+      #
+      # @example Handle redirects.
+      #   request  = HTTP::Client::Request.new(:get, "http://www.example.org/", max_redirects: 3)
+      #   response = request.execute
+      #
+      # @example Perform request and return result in one go.
+      #   response = HTTP::Client.get("http://www.example.org/", max_redirects: 3)
+      #
+      # @example Upload a few files in a POST request.
+      #   request  = HTTP::Client::Request.new(:post, "http://www.example.org/", files: {"cats" => "cats.jpg", "dogs" => "dogs.jpg"}, query: {title: "cute pics"})
+      #   response = request.execute
+      #
+      # @example Pass in an external cookie jar.
+      #   jar  = HTTP::CookieJar.new
+      #   jar.load("mycookies.cky")
+      #   response = HTTP::Client.get("http://www.example.org/", jar: jar)
       #
       def initialize verb, uri, args = {}
         args.each do |k, v|

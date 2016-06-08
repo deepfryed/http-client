@@ -53,7 +53,7 @@ HTTP::Client::Response
 |------|------|-------------|
 | headers | Hash | Net::HTTP headers, in key-value pairs. |
 | query | Hash | Net::HTTP query-string in key-value pairs. |
-| files | Hash | Multi-part file uploads, in key-value pairs of {name => path_to_file} or {name => [File]} |
+| files | Hash | Multi-part file uploads, in key-value pairs of {name => path_to_file} or {name => File} |
 | body | String | Request body. |
 | auth | Hash | Basic-Auth hash. {username: "...", password: "..."} |
 | timeout | Integer | Fixed timeout for connection, read and ssl handshake in seconds. |
