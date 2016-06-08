@@ -19,7 +19,8 @@ describe 'HTTP Client Request' do
       files:         {test1: __FILE__, test2: __FILE__},
       max_redirects: 2,
       timeout:       10,
-      ssl_verify:    HTTP::Client::SSL_VERIFY_NONE
+      ssl_verify:    HTTP::Client::SSL_VERIFY_NONE,
+      body:          'Hello world!'
     )
   end
 

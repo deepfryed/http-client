@@ -64,6 +64,10 @@ HTTP::Client::Response
 | ssl_verify | Integer | OpenSSL verification, HTTP::Client::SSL_VERIFY_PEER or HTTP::Client::SSL_VERIFY_NONE, defaults to SSL_VERIFY_PEER. |
 | jar | HTTP::CookieJar | Optional cookie jar to use. Relies on HTTP::CookieJar from http-cookie gem. |
 
+## TODO
+
+Extensive testing :/
+
 ## License
 
 MIT

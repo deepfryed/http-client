@@ -57,7 +57,7 @@ module HTTP
         setup_request_delegate! verb, args
 
         if body = args[:body]
-          raise ArgumentError, "#{verb} cannot have body" unless klass.const_get(:REQUEST_HAS_BODY)
+          raise ArgumentError, "#{verb} cannot have body" unless @delegate.class.const_get(:REQUEST_HAS_BODY)
           @delegate.body = body
         end
 
