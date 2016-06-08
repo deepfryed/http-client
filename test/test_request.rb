@@ -24,14 +24,21 @@ describe 'HTTP Client Request' do
     )
   end
 
-  # TODO: mock http endpoint
   it 'executes a request and returns reponse' do
-    response = HTTP::Client.get(URI.parse("http://www.google.com"))
+    app    = proc {|req| [200, {}, "Hello World!"]}
+    server = TestServer.new(app)
+    server.run
+
+    response = HTTP::Client.get(server.root)
+    server.stop
     assert response
     assert_kind_of Hash, response.headers
   end
 
   it 'raises timeout errors' do
-    assert_raises(Net::OpenTimeout) {HTTP::Client.get("http://dingus.in:1000/", timeout: 0.2)}
+    app    = proc {|req| sleep }
+    server = TestServer.new(app)
+    server.run
+    assert_raises(Net::ReadTimeout) {HTTP::Client.get(server.root, timeout: 0.2)}
   end
 end
