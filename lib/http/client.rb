@@ -16,18 +16,20 @@ module HTTP
     DELETE                  = Net::HTTP::Delete
     OPTIONS                 = Net::HTTP::Options
     TRACE                   = Net::HTTP::Trace
-    VALID_VERBS             = [GET, HEAD, PUT, POST, DELETE, OPTIONS, TRACE]
 
     SSL_VERIFY_NONE         = OpenSSL::SSL::VERIFY_NONE
     SSL_VERIFY_PEER         = OpenSSL::SSL::VERIFY_PEER
-    VALID_SSL_VERIFICATIONS = [SSL_VERIFY_NONE, SSL_VERIFY_PEER]
-
-    DEFAULT_HEADERS         = {'User-Agent' => 'HTTP Client API/1.0'}
 
     class Request
-      attr_reader :uri
+      VALID_PARAMETERS        = %w(headers files query body auth timeout open_timeout ssl_timeout read_timeout max_redirects ssl_verify jar)
+      DEFAULT_HEADERS         = {'User-Agent' => 'HTTP Client API/1.0'}
 
-      VALID_PARAMETERS = %w(headers files query body auth timeout open_timeout ssl_timeout read_timeout max_redirects ssl_verify jar)
+      REDIRECT_WITH_GET       = [301, 302, 303]
+      REDIRECT_WITH_ORIGINAL  = [307, 308]
+
+      VALID_VERBS             = [GET, HEAD, PUT, POST, DELETE, OPTIONS, TRACE]
+      VALID_SSL_VERIFICATIONS = [SSL_VERIFY_NONE, SSL_VERIFY_PEER]
+      VALID_REDIRECT_CODES    = REDIRECT_WITH_GET + REDIRECT_WITH_ORIGINAL
 
       # Create a new HTTP Client Request.
       #
@@ -74,8 +76,8 @@ module HTTP
           raise ArgumentError, "unknown argument #{k}" unless VALID_PARAMETERS.include?(k.to_s)
         end
 
-        parse_uri! uri
-        setup_request_delegate! verb, args
+        uri       = parse_uri!(uri)
+        @delegate = create_request_delegate(verb, uri, args)
 
         if body = args[:body]
           raise ArgumentError, "#{verb} cannot have body" unless @delegate.class.const_get(:REQUEST_HAS_BODY)
@@ -98,9 +100,9 @@ module HTTP
         @ssl_timeout  = args[:ssl_timeout]  if args[:ssl_timeout]
         @read_timeout = args[:read_timeout] if args[:read_timeout]
 
-        @redirects    = args.fetch(:max_redirects, 0)
-        @ssl_verify   = args.fetch(:ssl_verify, SSL_VERIFY_PEER)
-        @jar          = args.fetch(:jar, HTTP::CookieJar.new)
+        @max_redirects = args.fetch(:max_redirects, 0)
+        @ssl_verify    = args.fetch(:ssl_verify, SSL_VERIFY_PEER)
+        @jar           = args.fetch(:jar, HTTP::CookieJar.new)
       end
 
       # Executes a request.
@@ -108,7 +110,7 @@ module HTTP
       # @return [HTTP::Client::Response]
       #
       def execute
-        @last_effective_uri = uri
+        last_effective_uri = uri
 
         cookie = HTTP::Cookie.cookie_value(@jar.cookies(uri))
         if cookie && !cookie.empty?
@@ -118,57 +120,73 @@ module HTTP
         response = request!(uri, @delegate)
         @jar.parse(response['set-cookie'].to_s, uri)
 
-        while @redirects > 0 && [301, 302, 307].include?(response.code.to_i)
-          @redirects -= 1
-          redirect    = redirect_to(response['location'])
+        redirects = 0
+        while redirects < @max_redirects && VALID_REDIRECT_CODES.include?(response.code.to_i)
+          redirects         += 1
+          last_effective_uri = parse_uri! response['location']
+          redirect_delegate  = redirect_to(last_effective_uri, response.code.to_i)
 
-          cookie = HTTP::Cookie.cookie_value(@jar.cookies(@last_effective_uri))
+          cookie = HTTP::Cookie.cookie_value(@jar.cookies(last_effective_uri))
           if cookie && !cookie.empty?
-            redirect.add_field('Cookie', cookie)
+            redirect_delegate.add_field('Cookie', cookie)
           end
 
-          response = request!(@last_effective_uri, redirect)
-          @jar.parse(response['set-cookie'].to_s, @last_effective_uri)
+          response = request!(last_effective_uri, redirect_delegate)
+          @jar.parse(response['set-cookie'].to_s, last_effective_uri)
         end
 
-        Response.new(response, @last_effective_uri)
+        Response.new(response, last_effective_uri)
       end
 
       private
+        def uri
+          @delegate.uri
+        end
+
         def parse_uri! uri
-          @uri = uri.kind_of?(URI) ? uri : URI.parse(uri)
-          case @uri
+          uri = uri.kind_of?(URI) ? uri : URI.parse(uri)
+          case uri
             when URI::HTTP, URI::HTTPS
-              # ok
+              uri
+            when URI::Generic
+              if @delegate.uri
+                @delegate.uri.dup.tap {|s| s += uri }
+              else
+                raise ArgumentError, "Invalid URI #{uri}"
+              end
             else
               raise ArgumentError, "Invalid URI #{uri}"
           end
         end
 
-        def setup_request_delegate! verb, args
-          klass    = find_delegate_class(verb)
-          @headers = DEFAULT_HEADERS.merge(args.fetch(:headers, {}))
+        def create_request_delegate verb, uri, args
+          klass   = find_delegate_class(verb)
+          headers = DEFAULT_HEADERS.merge(args.fetch(:headers, {}))
 
           files    = args[:files]
           qs       = args[:query]
+          uri      = uri.dup
+          delegate = nil
 
           if files
             raise ArgumentError, "#{verb} cannot have body" unless klass.const_get(:REQUEST_HAS_BODY)
-            multipart              = Multipart.new(files, qs)
-            @delegate              = klass.new(@uri.request_uri, headers_for(@uri))
-            @delegate.content_type = multipart.content_type
-            @delegate.body         = multipart.body
+            multipart             = Multipart.new(files, qs)
+            delegate              = klass.new(uri, headers)
+            delegate.content_type = multipart.content_type
+            delegate.body         = multipart.body
           elsif qs
             if klass.const_get(:REQUEST_HAS_BODY)
-              @delegate = klass.new(@uri.request_uri, headers_for(@uri))
-              @delegate.set_form_data(qs)
+              delegate = klass.new(uri, headers)
+              delegate.set_form_data(qs)
             else
-              @uri.query = URI.encode_www_form(qs)
-              @delegate = klass.new(@uri.request_uri, headers_for(@uri))
+              uri.query = URI.encode_www_form(qs)
+              delegate  = klass.new(uri, headers)
             end
           else
-            @delegate = klass.new(@uri.request_uri, headers_for(@uri))
+            delegate = klass.new(uri, headers)
           end
+
+          delegate
         end
 
         def request! uri, delegate
@@ -187,13 +205,28 @@ module HTTP
           response
         end
 
-        def redirect_to uri
-          @last_effective_uri = URI.parse(uri)
-          GET.new(@last_effective_uri.request_uri, headers_for(@last_effective_uri))
-        end
+        def redirect_to uri, code
+          # NOTE request-uri with query string is not preserved.
+          case code
+            when *REDIRECT_WITH_GET
+              GET.new(uri, {}).tap do |r|
+                @delegate.each_header do |field, value|
+                  next if field.downcase == 'host'
+                  r[field] = value
+                end
+              end
+            when *REDIRECT_WITH_ORIGINAL
+              @delegate.class.new(uri, {}).tap do |r|
+                @delegate.each_header do |field, value|
+                  next if field.downcase == 'host'
+                  r[field] = value
+                end
 
-        def headers_for uri
-          @headers
+                r.body = @delegate.body
+              end
+            else
+              raise RuntimeError, "response #{code} should not result in redirection."
+          end
         end
 
         def find_delegate_class verb

@@ -1,3 +1,9 @@
+== 0.1.2 (2016-06-09)
+
+* Fix YARD documentation.
+* Preserve headers in 301, 302 & 303 redirects.
+* Handle 303, 307 & 308.
+
 == 0.1.1 (2016-06-08)
 
 * Less restrictive dependency versions.
