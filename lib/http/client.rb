@@ -4,6 +4,7 @@ require 'openssl'
 require 'uri'
 require 'mime/types'
 require 'http-cookie'
+require 'stringio'
 require 'zlib'
 
 module HTTP
@@ -270,8 +271,11 @@ module HTTP
       def body
         case headers['content-encoding'].to_s.downcase
           when 'gzip'
-            Zlib::GzipReader.open(StringIO.new(response.body)) do |gz|
+            gz = Zlib::GzipReader.new(StringIO.new(response.body))
+            begin
               gz.read
+            ensure
+              gz.close
             end
           when 'deflate'
             Zlib.inflate(response.body)

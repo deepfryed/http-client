@@ -1,3 +1,5 @@
+require 'zlib'
+require 'stringio'
 require_relative 'helper'
 
 describe 'HTTP Client Request' do
@@ -161,16 +163,30 @@ describe 'HTTP Client Request' do
 
   it 'handles gzip and deflate compression schemes.' do
     app = proc do |req|
-      [200, {'Content-Encoding' => 'gzip'}, Zlib.deflate("Hello!")]
+      case req.path
+        when '/gzip'
+          [
+            200,
+            {'content-encoding' => 'gzip'},
+            StringIO.new.tap {|io|
+              gz = Zlib::GzipWriter.new(io)
+              gz.write("Hello 1")
+              gz.close
+            }.string
+          ]
+        when '/deflate'
+          [200, {'content-encoding' => 'deflate'}, Zlib.deflate("Hello 2")]
+      end
     end
 
     server = TestServer.new(app)
     server.run
 
-    response = HTTP::Client.get(server.root)
-    server.stop
+    response = HTTP::Client.get("#{server.root}/gzip", headers: {'accept-encoding' => 'gzip;deflate'})
+    assert_equal 'Hello 1', response.body, 'gunzip ok'
 
-    assert_equal 200,      response.code
-    assert_equal "Hello!", response.body
+    response = HTTP::Client.get("#{server.root}/deflate", headers: {'accept-encoding' => 'gzip;deflate'})
+    assert_equal 'Hello 2', response.body, 'inflate ok'
+    server.stop
   end
 end
