@@ -1,6 +1,6 @@
 # HTTP Client
 
-A simple Net::HTTP wrapper with multi-part and cookie-jar support.
+A simple Net::HTTP wrapper with multi-part request, file upload and cookie-jar support.
 
 ## Install
 
