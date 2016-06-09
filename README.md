@@ -17,7 +17,7 @@ res = HTTP::Client::Request.new(:get, "http://a.b/", max_redirects: 2).execute
 # save a few keystrokes.
 res = HTTP::Client.get("http://a.b/", max_redirects: 2)
 res = HTTP::Client.put("http://a.b/", files: {pic: "kittens.jpg"}, query: {title: "the usual suspects"})
-res = HTTP::Client.post("http://a.b/", auth: {username: "test", password: "test"}, headers: {'x-test' => 'hello'})
+res = HTTP::Client.post("http://a.b/", auth: {username: "test", password: "test"}, headers: {'x-a' => 'b'})
 res = HTTP::Client.delete("http://a.b/", auth: {username: "test", password: "test"});
 ```
 

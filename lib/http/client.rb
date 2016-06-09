@@ -33,21 +33,21 @@ module HTTP
 
       # Create a new HTTP Client Request.
       #
-      # @param  [Symbol]        verb            HTTP verb, one of :get, :head, :put, :post, :delete, :options, :trace.
-      # @param  [String or URI] uri             Remote URI.
-      # @param  [Hash]          args            Options, see below.
-      # @option args [Hash]     headers         Net::HTTP headers, in key-value pairs.
-      # @option args [Hash]     query           Net::HTTP query-string in key-value pairs.
-      # @option args [Hash]     files           Multi-part file uploads, in key-value pairs of name & path or name & File object.
-      # @option args [String]   body            Request body.
-      # @option args [Hash]     auth            Basic-Auth hash. Requires :username and :password.
-      # @option args [Integer]  timeout         Fixed timeout for connection, read and ssl handshake in seconds.
-      # @option args [Integer]  open_timeout    Connection timeout in seconds.
-      # @option args [Integer]  read_timeout    Read timeout in seconds.
-      # @option args [Integer]  ssl_timeout     SSL handshake timeout in seconds.
-      # @option args [Integer]  max_redirects   Max redirect follow, default: 0
-      # @option args [Integer]  ssl_verify      OpenSSL verification, SSL_VERIFY_PEER or SSL_VERIFY_NONE, defaults to SSL_VERIFY_PEER.
-      # @option args [HTTP::CookieJar]          jar Optional cookie jar to use. Relies on HTTP::CookieJar from http-cookie gem.
+      # @param  [Symbol]               verb            HTTP verb, one of :get, :head, :put, :post, :delete, :options, :trace.
+      # @param  [String or URI]        uri             Remote URI.
+      # @param  [Hash]                 args            Options, see below.
+      # @option args [Hash]            headers         Net::HTTP headers, in key-value pairs.
+      # @option args [Hash]            query           Net::HTTP query-string in key-value pairs.
+      # @option args [Hash]            files           Multi-part file uploads, in key-value pairs of name & path or name & File object.
+      # @option args [String]          body            Request body.
+      # @option args [Hash]            auth            Basic-Auth hash. Requires :username and :password.
+      # @option args [Integer]         timeout         Fixed timeout for connection, read and ssl handshake in seconds.
+      # @option args [Integer]         open_timeout    Connection timeout in seconds.
+      # @option args [Integer]         read_timeout    Read timeout in seconds.
+      # @option args [Integer]         ssl_timeout     SSL handshake timeout in seconds.
+      # @option args [Integer]         max_redirects   Max redirect follow, default: 0
+      # @option args [Integer]         ssl_verify      OpenSSL verification, SSL_VERIFY_PEER or SSL_VERIFY_NONE, defaults to SSL_VERIFY_PEER.
+      # @option args [HTTP::CookieJar] jar             Optional cookie jar to use. Relies on HTTP::CookieJar from http-cookie gem.
       #
       # @return [HTTP::Client::Request]
       #
@@ -344,44 +344,56 @@ module HTTP
       # Creates a GET request and executes it, returning the response.
       # @see HTTP::Client::Request#initialize
       #
+      # @param  [String or URI] uri   Remote URI.
+      # @param  [Hash]          args  Options, see HTTP::Client::Request#initialize.
       # @return [HTTP::Client::Response]
       #
-      def get     *args; Request.new(GET, *args).execute; end
+      def get uri, args = {}; Request.new(GET, uri, args).execute; end
 
       # Creates a PUT request and executes it, returning the response.
       # @see HTTP::Client::Request#initialize
       #
+      # @param  [String or URI] uri   Remote URI.
+      # @param  [Hash]          args  Options, see HTTP::Client::Request#initialize.
       # @return [HTTP::Client::Response]
       #
-      def put     *args; Request.new(PUT, *args).execute; end
+      def put uri, args = {}; Request.new(PUT, uri, args).execute; end
 
       # Creates a POST request and executes it, returning the response.
       # @see HTTP::Client::Request#initialize
       #
+      # @param  [String or URI] uri   Remote URI.
+      # @param  [Hash]          args  Options, see HTTP::Client::Request#initialize.
       # @return [HTTP::Client::Response]
       #
-      def post    *args; Request.new(POST, *args).execute; end
+      def post  uri, args = {}; Request.new(POST, uri, args).execute; end
 
       # Creates a DELETE request and executes it, returning the response.
       # @see HTTP::Client::Request#initialize
       #
+      # @param  [String or URI] uri   Remote URI.
+      # @param  [Hash]          args  Options, see HTTP::Client::Request#initialize.
       # @return [HTTP::Client::Response]
       #
-      def delete  *args; Request.new(DELETE, *args).execute; end
+      def delete uri, args = {}; Request.new(DELETE, uri, args).execute; end
 
       # Creates a OPTIONS request and executes it, returning the response.
       # @see HTTP::Client::Request#initialize
       #
+      # @param  [String or URI] uri   Remote URI.
+      # @param  [Hash]          args  Options, see HTTP::Client::Request#initialize.
       # @return [HTTP::Client::Response]
       #
-      def options *args; Request.new(OPTIONS, *args).execute; end
+      def options uri, args = {}; Request.new(OPTIONS, uri, args).execute; end
 
       # Creates a TRACE request and executes it, returning the response.
       # @see HTTP::Client::Request#initialize
       #
+      # @param  [String or URI] uri   Remote URI.
+      # @param  [Hash]          args  Options, see HTTP::Client::Request#initialize.
       # @return [HTTP::Client::Response]
       #
-      def trace   *args; Request.new(TRACE, *args).execute; end
+      def trace uri, args = {}; Request.new(TRACE, uri, args).execute; end
     end
   end # Client
 end # HTTP
