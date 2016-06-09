@@ -12,26 +12,33 @@ gem install http-client
 
 ```ruby
 require 'http-client'
-res = HTTP::Client::Request.new(:get, "http://www.example.org", max_redirects: 2).execute
+res = HTTP::Client::Request.new(:get, "http://a.b/", max_redirects: 2).execute
 
 # save a few keystrokes.
-res = HTTP::Client.get("http://www.example.org/", max_redirects: 2)
-res = HTTP::Client.post(
-  "http://www.example.org/",
-  files: {pic: "kittens.jpg"},
-  query: {title: "the usual suspects"}
-)
+res = HTTP::Client.get("http://a.b/", max_redirects: 2)
+res = HTTP::Client.put("http://a.b/", files: {pic: "kittens.jpg"}, query: {title: "the usual suspects"})
+res = HTTP::Client.post("http://a.b/", auth: {username: "test", password: "test"}, headers: {'x-test' => 'hello'})
+res = HTTP::Client.delete("http://a.b/", auth: {username: "test", password: "test"});
 ```
 
 ## API
 
 ```
+HTTP::Client
+    .get(uri, arguments = {})
+    .put(uri, arguments = {})
+    .post(uri, arguments = {})
+    .head(uri, arguments = {})
+    .trace(uri, arguments = {})
+    .delete(uri, arguments = {})
+    .options(uri, arguments = {})
+
 HTTP::Client::Request
     .new(verb, uri, arguments = {})
     #execute
 
 HTTP::Client::Response
-    .new net_http_response, last_effective_uri
+    .new(net_http_response, last_effective_uri)
     #code
     #body
     #headers
