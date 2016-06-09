@@ -158,4 +158,19 @@ describe 'HTTP Client Request' do
     assert_equal data, qs['this']
     assert_equal File.basename(__FILE__), qs['this'].filename # people should stop overloading / extending String!
   end
+
+  it 'handles gzip and deflate compression schemes.' do
+    app = proc do |req|
+      [200, {'Content-Encoding' => 'gzip'}, Zlib.deflate("Hello!")]
+    end
+
+    server = TestServer.new(app)
+    server.run
+
+    response = HTTP::Client.get(server.root)
+    server.stop
+
+    assert_equal 200,      response.code
+    assert_equal "Hello!", response.body
+  end
 end

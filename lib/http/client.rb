@@ -4,10 +4,11 @@ require 'openssl'
 require 'uri'
 require 'mime/types'
 require 'http-cookie'
+require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.1.2'
+    VERSION = '0.2.0'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -251,7 +252,7 @@ module HTTP
     end # Request
 
     class Response
-      attr_reader :last_effective_uri
+      attr_reader :last_effective_uri, :response
 
       def initialize response, last_effective_uri
         @response           = response
@@ -259,15 +260,24 @@ module HTTP
       end
 
       def code
-        @response.code.to_i
+        response.code.to_i
       end
 
       def headers
-        @headers ||= Hash[@response.each_header.entries]
+        @headers ||= Hash[response.each_header.entries]
       end
 
       def body
-        @response.body
+        case headers['content-encoding'].to_s.downcase
+          when 'gzip'
+            Zlib::GzipReader.open(StringIO.new(response.body)) do |gz|
+              gz.read
+            end
+          when 'deflate'
+            Zlib.inflate(response.body)
+          else
+            response.body
+        end
       end
 
       def inspect
