@@ -6,6 +6,7 @@ describe 'HTTP Client Request' do
   it 'should reject invalid arguments' do
     assert_raises(HTTP::Client::ArgumentError, 'invalid verb') {HTTP::Client::Request.new(:foo, 'http://example.org/')}
     assert_raises(HTTP::Client::ArgumentError, 'invalid uri')  {HTTP::Client::Request.new(:get, 'http://')}
+    assert_raises(HTTP::Client::ArgumentError, 'invalid uri')  {HTTP::Client::Request.new(:get, '/hello')}
 
     assert_raises(HTTP::Client::ArgumentError, 'invalid argument')  do
       HTTP::Client::Request.new(:get, 'http://example.org/', foo: 1)

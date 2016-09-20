@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.2.1'
+    VERSION = '0.2.2'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -158,7 +158,7 @@ module HTTP
               raise ArgumentError, "Invalid URI #{uri}" if uri.host.nil?
               uri
             when URI::Generic
-              if @delegate.uri
+              if @delegate && @delegate.uri
                 @delegate.uri.dup.tap {|s| s += uri }
               else
                 raise ArgumentError, "Invalid URI #{uri}"
