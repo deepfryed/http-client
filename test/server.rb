@@ -40,12 +40,7 @@ class TestServer
 
   private
     def find_port
-      @tcp = nil
-      for port in 32768..65535
-        @tcp = TCPServer.new('127.0.0.1', port) rescue nil
-        break if @tcp
-      end
-
+      @tcp = TCPServer.new('127.0.0.1', 0) rescue nil
       @tcp or raise RuntimeError 'Unable to find a local TCP port to bind.'
       port = @tcp.addr[1]
       @tcp.close

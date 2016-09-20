@@ -149,6 +149,7 @@ module HTTP
           uri = uri.kind_of?(URI) ? uri : URI.parse(uri)
           case uri
             when URI::HTTP, URI::HTTPS
+              raise ArgumentError, "Invalid URI #{uri}" if uri.host.nil?
               uri
             when URI::Generic
               if @delegate.uri
@@ -159,6 +160,8 @@ module HTTP
             else
               raise ArgumentError, "Invalid URI #{uri}"
           end
+        rescue URI::InvalidURIError => e
+          raise ArgumentError, "Invalid URI #{uri}"
         end
 
         def create_request_delegate verb, uri, args
