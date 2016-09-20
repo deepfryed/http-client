@@ -4,16 +4,16 @@ require_relative 'helper'
 
 describe 'HTTP Client Request' do
   it 'should reject invalid arguments' do
-    assert_raises(ArgumentError, 'invalid verb') {HTTP::Client::Request.new(:foo)}
-    assert_raises(ArgumentError, 'invalid uri')  {HTTP::Client::Request.new(:get, 'http://')}
+    assert_raises(HTTP::Client::ArgumentError, 'invalid verb') {HTTP::Client::Request.new(:foo, 'http://example.org/')}
+    assert_raises(HTTP::Client::ArgumentError, 'invalid uri')  {HTTP::Client::Request.new(:get, 'http://')}
 
-    assert_raises(ArgumentError, 'invalid argument')  do
+    assert_raises(HTTP::Client::ArgumentError, 'invalid argument')  do
       HTTP::Client::Request.new(:get, 'http://example.org/', foo: 1)
     end
   end
 
   it 'validates body based on request verb' do
-    assert_raises(ArgumentError, 'get cannot have body') do
+    assert_raises(HTTP::Client::ArgumentError, 'get cannot have body') do
       HTTP::Client::Request.new(:get, 'http://a.c', files: {test: __FILE__})
     end
   end

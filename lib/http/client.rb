@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.2.0'
+    VERSION = '0.2.1'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -21,6 +21,12 @@ module HTTP
 
     SSL_VERIFY_NONE         = OpenSSL::SSL::VERIFY_NONE
     SSL_VERIFY_PEER         = OpenSSL::SSL::VERIFY_PEER
+
+    class Error < StandardError;
+    end
+
+    class ArgumentError < Error;
+    end
 
     class Request
       VALID_PARAMETERS        = %w(headers files query body auth timeout open_timeout ssl_timeout read_timeout max_redirects ssl_verify jar)
@@ -230,7 +236,7 @@ module HTTP
                 r.body = @delegate.body
               end
             else
-              raise RuntimeError, "response #{code} should not result in redirection."
+              raise Error, "response #{code} should not result in redirection."
           end
         end
 
