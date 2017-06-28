@@ -1,20 +1,20 @@
 # -*- encoding: utf-8 -*-
-# stub: http-client 0.2.2 ruby lib
+# stub: http-client 0.3.0 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "http-client"
-  s.version = "0.2.2"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Bharanee Rathna"]
-  s.date = "2016-09-21"
+  s.date = "2017-06-28"
   s.description = "Light weight wrapper around Net::HTTP"
   s.email = ["deepfryed@gmail.com"]
   s.files = ["CHANGELOG", "README.md", "lib/http-client.rb", "lib/http/client.rb", "test/helper.rb", "test/server.rb", "test/test_request.rb"]
   s.homepage = "http://github.com/deepfryed/http-client"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.2.2"
+  s.rubygems_version = "2.5.1"
   s.summary = "A client wrapper around Net::HTTP"
 
   if s.respond_to? :specification_version then

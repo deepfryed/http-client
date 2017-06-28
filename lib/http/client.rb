@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.2.2'
+    VERSION = '0.3.0'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -214,6 +214,14 @@ module HTTP
           response = http.request(delegate)
           http.finish if http.started?
           response
+        rescue URI::Error => e
+          raise Error::URI.new(e.message, e)
+        rescue Zlib::Error => e
+          raise Error::Zlib.new(e.message, e)
+        rescue Timeout::Error => e
+          raise Error::Timeout.new(e.message, e)
+        rescue Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+          raise Error::Transport.new(e.message, e)
         end
 
         def redirect_to uri, code
@@ -418,5 +426,19 @@ module HTTP
       #
       def trace uri, args = {}; Request.new(TRACE, uri, args).execute; end
     end
+
+    class Error < StandardError
+      attr_reader :original_error
+
+      def initialize message, original_error = nil
+        @original_error = original_error
+        super(message)
+      end
+
+      class URI < Error; end
+      class Zlib < Error; end
+      class Timeout < Error; end
+      class Transport < Error; end
+    end # Error
   end # Client
 end # HTTP

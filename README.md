@@ -45,6 +45,19 @@ HTTP::Client::Response
     #last_effective_uri
 ```
 
+### Exceptions
+
+HTTP::Client rescues most Net::HTTP, Zlib and URI related exceptions and re-raises them as an appropriate exception.
+You can retrieve the original exception using the `HTTP::Client::Error#original_error` instance method.
+
+```
+HTTP::Client::Error
+  HTTP::Client::Error::URI
+  HTTP::Client::Error::Zlib
+  HTTP::Client::Error::Timeout
+  HTTP::Client::Error::Transport
+```
+
 ### Request parameters
 
 #### Required

@@ -47,7 +47,7 @@ describe 'HTTP Client Request' do
     app    = proc {|req| sleep }
     server = TestServer.new(app)
     server.run
-    assert_raises(Net::ReadTimeout) {HTTP::Client.get(server.root, timeout: 0.2)}
+    assert_raises(HTTP::Client::Error::Timeout) {HTTP::Client.get(server.root, timeout: 0.2)}
   end
 
   it 'handles redirects' do

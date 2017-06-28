@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    http-client (0.2.1)
+    http-client (0.2.2)
       http-cookie (~> 1.0, >= 1.0)
       mime-types (~> 3.0, >= 3.0)
 
@@ -10,7 +10,7 @@ GEM
   specs:
     ansi (1.5.0)
     builder (3.2.2)
-    domain_name (0.5.20160310)
+    domain_name (0.5.20160826)
       unf (>= 0.0.5, < 1.0.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -27,7 +27,7 @@ GEM
     ruby-progressbar (1.8.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.2)
+    unf_ext (0.0.7.4)
 
 PLATFORMS
   ruby
