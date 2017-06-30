@@ -4,3 +4,4 @@ vendor/
 pkg/
 doc/
 .yardoc/
+.bundle

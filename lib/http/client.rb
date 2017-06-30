@@ -201,7 +201,7 @@ module HTTP
         end
 
         def request! uri, delegate
-          http = Net::HTTP.new(uri.host, uri.port)
+          http = Net::HTTP.new(uri.host, uri.port, :ENV)
           if uri.scheme == 'https'
             http.use_ssl     = true
             http.verify_mode = @ssl_verify
