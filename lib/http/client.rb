@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.3.0'
+    VERSION = '0.4.0'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -21,12 +21,6 @@ module HTTP
 
     SSL_VERIFY_NONE         = OpenSSL::SSL::VERIFY_NONE
     SSL_VERIFY_PEER         = OpenSSL::SSL::VERIFY_PEER
-
-    class Error < StandardError;
-    end
-
-    class ArgumentError < Error;
-    end
 
     class Request
       VALID_PARAMETERS        = %w(headers files query body auth timeout open_timeout ssl_timeout read_timeout max_redirects ssl_verify jar)
@@ -54,7 +48,7 @@ module HTTP
       # @option args [Integer]         read_timeout    Read timeout in seconds.
       # @option args [Integer]         ssl_timeout     SSL handshake timeout in seconds.
       # @option args [Integer]         max_redirects   Max redirect follow, default: 0
-      # @option args [Integer]         ssl_verify      OpenSSL verification, SSL_VERIFY_PEER or SSL_VERIFY_NONE, defaults to SSL_VERIFY_PEER.
+      # @option args [Integer]         ssl_verify      OpenSSL verification, SSL_VERIFY_PEER (default) or SSL_VERIFY_NONE.
       # @option args [HTTP::CookieJar] jar             Optional cookie jar to use. Relies on HTTP::CookieJar from http-cookie gem.
       #
       # @return [HTTP::Client::Request]
@@ -71,7 +65,11 @@ module HTTP
       #   response = HTTP::Client.get("http://www.example.org/", max_redirects: 3)
       #
       # @example Upload a few files in a POST request.
-      #   request  = HTTP::Client::Request.new(:post, "http://www.example.org/", files: {"cats" => "cats.jpg", "dogs" => "dogs.jpg"}, query: {title: "cute pics"})
+      #   request  = HTTP::Client::Request.new(
+      #     :post, "http://www.example.org/",
+      #     files: {"cats" => "cats.jpg", "dogs" => "dogs.jpg"},
+      #     query: {title: "cute pics"}
+      #   )
       #   response = request.execute
       #
       # @example Pass in an external cookie jar.
@@ -81,14 +79,14 @@ module HTTP
       #
       def initialize verb, uri, args = {}
         args.each do |k, v|
-          raise ArgumentError, "unknown argument #{k}" unless VALID_PARAMETERS.include?(k.to_s)
+          raise Error::Argument, "unknown argument #{k}" unless VALID_PARAMETERS.include?(k.to_s)
         end
 
         uri       = parse_uri!(uri)
         @delegate = create_request_delegate(verb, uri, args)
 
         if body = args[:body]
-          raise ArgumentError, "#{verb} cannot have body" unless @delegate.class.const_get(:REQUEST_HAS_BODY)
+          raise Error::Argument, "#{verb} cannot have body" unless @delegate.class.const_get(:REQUEST_HAS_BODY)
           @delegate.body = body
         end
 
@@ -155,19 +153,19 @@ module HTTP
           uri = uri.kind_of?(URI) ? uri : URI.parse(uri)
           case uri
             when URI::HTTP, URI::HTTPS
-              raise ArgumentError, "Invalid URI #{uri}" if uri.host.nil?
+              raise Error::URI, "Invalid URI #{uri}" if uri.host.nil?
               uri
             when URI::Generic
               if @delegate && @delegate.uri
                 @delegate.uri.dup.tap {|s| s += uri }
               else
-                raise ArgumentError, "Invalid URI #{uri}"
+                raise Error::URI, "Invalid URI #{uri}"
               end
             else
-              raise ArgumentError, "Invalid URI #{uri}"
+              raise Error::URI, "Invalid URI #{uri}"
           end
         rescue URI::InvalidURIError => e
-          raise ArgumentError, "Invalid URI #{uri}"
+          raise Error::URI, "Invalid URI #{uri}"
         end
 
         def create_request_delegate verb, uri, args
@@ -180,7 +178,7 @@ module HTTP
           delegate = nil
 
           if files
-            raise ArgumentError, "#{verb} cannot have body" unless klass.const_get(:REQUEST_HAS_BODY)
+            raise Error::Argument, "#{verb} cannot have body" unless klass.const_get(:REQUEST_HAS_BODY)
             multipart             = Multipart.new(files, qs)
             delegate              = klass.new(uri, headers)
             delegate.content_type = multipart.content_type
@@ -264,7 +262,7 @@ module HTTP
             when /^post$/i    then POST
             when /^delete$/i  then DELETE
             else
-              raise ArgumentError, "Invalid verb #{string}"
+              raise Error::Argument, "Invalid verb #{string}"
           end
         end
     end # Request
@@ -439,6 +437,7 @@ module HTTP
       class Zlib < Error; end
       class Timeout < Error; end
       class Transport < Error; end
+      class Argument < Error; end
     end # Error
   end # Client
 end # HTTP

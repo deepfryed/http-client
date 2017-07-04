@@ -56,6 +56,7 @@ HTTP::Client::Error
   HTTP::Client::Error::Zlib
   HTTP::Client::Error::Timeout
   HTTP::Client::Error::Transport
+  HTTP::Client::Error::Argument
 ```
 
 ### Request parameters
