@@ -1,3 +1,7 @@
+== 0.5.0 (2018-08-20)
+
+* Handle basic auth credentials passed in URI.
+
 == 0.4.0 (2017-07-05)
 
 * Cleanup error classes namespacing.

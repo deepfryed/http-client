@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.4.0'
+    VERSION = '0.5.0'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -90,8 +90,14 @@ module HTTP
           @delegate.body = body
         end
 
+        # if auth is passed as arguments.
         if auth = args[:auth]
           @delegate.basic_auth(auth.fetch(:username), auth.fetch(:password))
+        end
+
+        # if auth is passed in uri.
+        if uri.user && uri.password
+          @delegate.basic_auth(uri.user, uri.password)
         end
 
         # generic timeout
