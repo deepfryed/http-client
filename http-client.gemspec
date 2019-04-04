@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: http-client 0.5.0 ruby lib
+# stub: http-client 0.6.0 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "http-client"
-  s.version = "0.5.0"
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Bharanee Rathna"]
-  s.date = "2018-08-20"
+  s.date = "2019-04-05"
   s.description = "Light weight wrapper around Net::HTTP"
   s.email = ["deepfryed@gmail.com"]
   s.files = ["CHANGELOG", "README.md", "lib/http-client.rb", "lib/http/client.rb", "test/helper.rb", "test/server.rb", "test/test_request.rb"]

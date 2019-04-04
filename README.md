@@ -33,6 +33,11 @@ HTTP::Client
     .delete(uri, arguments = {})
     .options(uri, arguments = {})
 
+HTTP::Client
+    .open_timeout=
+    .read_timeout=
+    .ssl_timeout=
+
 HTTP::Client::Request
     .new(verb, uri, arguments = {})
     #execute

@@ -1,3 +1,7 @@
+== 0.6.0 (2019-04-05)
+
+* Accessors to set default global timeouts for Net::HTTP.
+
 == 0.5.0 (2018-08-20)
 
 * Handle basic auth credentials passed in URI.

@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.5.0'
+    VERSION = '0.6.0'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -21,6 +21,10 @@ module HTTP
 
     SSL_VERIFY_NONE         = OpenSSL::SSL::VERIFY_NONE
     SSL_VERIFY_PEER         = OpenSSL::SSL::VERIFY_PEER
+
+    class << self
+      attr_accessor :open_timeout, :ssl_timeout, :read_timeout
+    end
 
     class Request
       VALID_PARAMETERS        = %w(headers files query body auth timeout open_timeout ssl_timeout read_timeout max_redirects ssl_verify jar)
@@ -100,17 +104,21 @@ module HTTP
           @delegate.basic_auth(uri.user, uri.password)
         end
 
+        @open_timeout = HTTP::Client.open_timeout
+        @read_timeout = HTTP::Client.read_timeout
+        @ssl_timeout  = HTTP::Client.ssl_timeout
+
         # generic timeout
         if timeout = args[:timeout]
           @open_timeout = timeout
-          @ssl_timeout  = timeout
           @read_timeout = timeout
+          @ssl_timeout  = timeout
         end
 
         # overrides
         @open_timeout = args[:open_timeout] if args[:open_timeout]
-        @ssl_timeout  = args[:ssl_timeout]  if args[:ssl_timeout]
         @read_timeout = args[:read_timeout] if args[:read_timeout]
+        @ssl_timeout  = args[:ssl_timeout]  if args[:ssl_timeout]
 
         @max_redirects = args.fetch(:max_redirects, 0)
         @ssl_verify    = args.fetch(:ssl_verify, SSL_VERIFY_PEER)
