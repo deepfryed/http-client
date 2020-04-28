@@ -1,3 +1,7 @@
+== 0.6.1 (2020-04-28)
+
+* Bugfix - handles multi-part file uploads without other form data.
+
 == 0.6.0 (2019-04-05)
 
 * Accessors to set default global timeouts for Net::HTTP.

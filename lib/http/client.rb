@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.6.0'
+    VERSION = '0.6.1'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -326,7 +326,7 @@ module HTTP
 
       def initialize files, query = {}
         @files    = files
-        @query    = query
+        @query    = query || {}
         @boundary = generate_boundary
       end
 
@@ -338,34 +338,38 @@ module HTTP
         body      = ''.encode('ASCII-8BIT')
         separator = "--#{boundary}"
 
-        @query.each do |key, value|
-          body << separator << EOL
-          body << %Q{Content-Disposition: form-data; name="#{key}"} << EOL
-          body << EOL
-          body << value
-          body << EOL
+        if @query && !@query.empty?
+          @query.each do |key, value|
+            body << separator << EOL
+            body << %Q{Content-Disposition: form-data; name="#{key}"} << EOL
+            body << EOL
+            body << value
+            body << EOL
+          end
         end
 
-        @files.each do |name, handle|
-          if handle.respond_to?(:read)
-            path = handle.path
-            data = io.read
-          else
-            path = handle
-            data = IO.read(path)
+        if @files && !@files.empty?
+          @files.each do |name, handle|
+            if handle.respond_to?(:read)
+              path = handle.path
+              data = io.read
+            else
+              path = handle
+              data = IO.read(path)
+            end
+
+            filename = File.basename(path)
+            mime     = mime_type(filename)
+
+            body << separator << EOL
+            body << %Q{Content-Disposition: form-data; name="#{name}"; filename="#{filename}"} << EOL
+            body << %Q{Content-Type: #{mime}}              << EOL
+            body << %Q{Content-Transfer-Encoding: binary}  << EOL
+            body << %Q{Content-Length: #{data.bytesize}}   << EOL
+            body << EOL
+            body << data
+            body << EOL
           end
-
-          filename = File.basename(path)
-          mime     = mime_type(filename)
-
-          body << separator << EOL
-          body << %Q{Content-Disposition: form-data; name="#{name}"; filename="#{filename}"} << EOL
-          body << %Q{Content-Type: #{mime}}              << EOL
-          body << %Q{Content-Transfer-Encoding: binary}  << EOL
-          body << %Q{Content-Length: #{data.bytesize}}   << EOL
-          body << EOL
-          body << data
-          body << EOL
         end
 
         body << separator << "--" << EOL
