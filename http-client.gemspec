@@ -24,12 +24,12 @@ Gem::Specification.new do |s|
   if s.respond_to? :add_runtime_dependency then
     s.add_runtime_dependency(%q<mime-types>.freeze, ["~> 3.0", ">= 3.0"])
     s.add_runtime_dependency(%q<http-cookie>.freeze, ["~> 1.0", ">= 1.0"])
-    s.add_development_dependency(%q<rake>.freeze, ["~> 11.0", ">= 11.0"])
+    s.add_development_dependency(%q<rake>.freeze, ["~> 12.0", ">= 12.0"])
     s.add_development_dependency(%q<minitest-reporters>.freeze, ["~> 1.0", "> 1.0"])
   else
     s.add_dependency(%q<mime-types>.freeze, ["~> 3.0", ">= 3.0"])
     s.add_dependency(%q<http-cookie>.freeze, ["~> 1.0", ">= 1.0"])
-    s.add_dependency(%q<rake>.freeze, ["~> 11.0", ">= 11.0"])
+    s.add_dependency(%q<rake>.freeze, ["~> 12.0", ">= 12.0"])
     s.add_dependency(%q<minitest-reporters>.freeze, ["~> 1.0", "> 1.0"])
   end
 end

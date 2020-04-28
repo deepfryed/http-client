@@ -23,7 +23,7 @@ $gemspec = Gem::Specification.new do |s|
 
   s.add_dependency('mime-types', '~> 3.0', '>= 3.0')
   s.add_dependency('http-cookie', '~> 1.0', '>= 1.0')
-  s.add_development_dependency('rake', '~> 11.0', '>= 11.0')
+  s.add_development_dependency('rake', '~> 12.0', '>= 12.0')
   s.add_development_dependency('minitest-reporters', '~> 1.0', '> 1.0')
 end
 
