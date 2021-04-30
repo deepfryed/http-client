@@ -226,8 +226,9 @@ module HTTP
           # this is tad risky, use with caution.
           if HTTP::Client.so_linger
             http.start
-            socket = http.instance_variable_get("@socket").io
-            socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_LINGER, [1,0].pack('ii'))
+            if socket = http.instance_variable_get("@socket")
+              socket.io.setsockopt(Socket::SOL_SOCKET, Socket::SO_LINGER, [1,0].pack('ii'))
+            end
           end
 
           response = http.request(delegate)
