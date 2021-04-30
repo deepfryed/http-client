@@ -3,6 +3,10 @@ require 'stringio'
 require_relative 'helper'
 
 describe 'HTTP Client Request' do
+  before do
+    HTTP::Client.so_linger = true
+  end
+
   it 'should reject invalid arguments' do
     assert_raises(HTTP::Client::Error::Argument, 'invalid verb') {HTTP::Client::Request.new(:foo, 'http://example.org/')}
     assert_raises(HTTP::Client::Error::URI, 'invalid uri') {HTTP::Client::Request.new(:get, 'http://')}

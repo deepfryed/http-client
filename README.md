@@ -37,7 +37,7 @@ HTTP::Client
     .open_timeout=
     .read_timeout=
     .ssl_timeout=
-
+   
 HTTP::Client::Request
     .new(verb, uri, arguments = {})
     #execute
@@ -48,6 +48,11 @@ HTTP::Client::Response
     #body
     #headers
     #last_effective_uri
+
+# Experimental
+
+HTTP::Client
+    .so_linger=<true|false>
 ```
 
 ### Exceptions

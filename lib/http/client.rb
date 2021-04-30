@@ -9,7 +9,7 @@ require 'zlib'
 
 module HTTP
   module Client
-    VERSION = '0.6.1'
+    VERSION = '0.7.0'
 
     GET                     = Net::HTTP::Get
     HEAD                    = Net::HTTP::Head
@@ -23,7 +23,7 @@ module HTTP
     SSL_VERIFY_PEER         = OpenSSL::SSL::VERIFY_PEER
 
     class << self
-      attr_accessor :open_timeout, :ssl_timeout, :read_timeout
+      attr_accessor :open_timeout, :ssl_timeout, :read_timeout, :so_linger
     end
 
     class Request
@@ -222,6 +222,13 @@ module HTTP
           http.open_timeout = @open_timeout if @open_timeout
           http.read_timeout = @read_timeout if @read_timeout
           http.ssl_timeout  = @ssl_timeout  if @ssl_timeout
+
+          # this is tad risky, use with caution.
+          if HTTP::Client.so_linger
+            http.start
+            socket = http.instance_variable_get("@socket").io
+            socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_LINGER, [1,0].pack('ii'))
+          end
 
           response = http.request(delegate)
           http.finish if http.started?
